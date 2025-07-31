@@ -1,0 +1,161 @@
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">
+        <i class="fas fa-cloud-sun me-2"></i>
+        Weather Forecast
+      </h1>
+      <%= link_to root_path, class: "btn btn-outline-primary" do %>
+        <i class="fas fa-arrow-left me-2"></i>
+        New Search
+      <% end %>
+    </div>
+
+    <% if @from_cache %>
+      <div class="alert alert-info d-flex align-items-center" role="alert">
+        <i class="fas fa-database me-2"></i>
+        <div>
+          <strong>Cached Result:</strong> This weather data was retrieved from cache (last updated within 30 minutes)
+        </div>
+      </div>
+    <% else %>
+      <div class="alert alert-success d-flex align-items-center" role="alert">
+        <i class="fas fa-sync-alt me-2"></i>
+        <div>
+          <strong>Fresh Data:</strong> This weather data was just fetched from the weather service
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Current Weather Card -->
+  <div class="col-md-6 mb-4">
+    <div class="card shadow h-100">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">
+          <i class="fas fa-map-marker-alt me-2"></i>
+          Current Weather
+        </h4>
+      </div>
+      <div class="card-body text-center p-4">
+        <% if @weather_data[:city] && @weather_data[:state] %>
+          <h5 class="text-muted mb-3">
+            <%= @weather_data[:city] %>, <%= @weather_data[:state] %>
+            <% if @weather_data[:zip_code] %>
+              (<%= @weather_data[:zip_code] %>)
+            <% end %>
+          </h5>
+        <% elsif @weather_data[:zip_code] %>
+          <h5 class="text-muted mb-3">Zip Code: <%= @weather_data[:zip_code] %></h5>
+        <% end %>
+
+        <div class="display-1 text-primary mb-3">
+          <%= @weather_data[:temperature] %>°F
+        </div>
+        
+        <h4 class="text-muted mb-3">
+          <i class="fas fa-cloud me-2"></i>
+          <%= @weather_data[:description] %>
+        </h4>
+        
+        <div class="row text-center">
+          <div class="col-6">
+            <div class="text-danger">
+              <i class="fas fa-arrow-up me-1"></i>
+              High: <%= @weather_data[:high_temp] %>°F
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-info">
+              <i class="fas fa-arrow-down me-1"></i>
+              Low: <%= @weather_data[:low_temp] %>°F
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extended Forecast Card -->
+  <div class="col-md-6 mb-4">
+    <div class="card shadow h-100">
+      <div class="card-header bg-success text-white">
+        <h4 class="mb-0">
+          <i class="fas fa-calendar-alt me-2"></i>
+          5-Day Forecast
+        </h4>
+      </div>
+      <div class="card-body p-0">
+        <% if @weather_data[:extended_forecast] %>
+          <div class="list-group list-group-flush">
+            <% @weather_data[:extended_forecast].each do |day| %>
+              <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <strong><%= day[:date] %></strong>
+                  <br>
+                  <small class="text-muted"><%= day[:description] %></small>
+                </div>
+                <div class="text-end">
+                  <div class="text-danger">
+                    <i class="fas fa-arrow-up me-1"></i>
+                    <%= day[:high_temp] %>°F
+                  </div>
+                  <div class="text-info">
+                    <i class="fas fa-arrow-down me-1"></i>
+                    <%= day[:low_temp] %>°F
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="card-body text-center">
+            <p class="text-muted">Extended forecast not available</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card shadow">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">
+          <i class="fas fa-info-circle me-2"></i>
+          Weather Information
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6>Data Source</h6>
+            <p class="text-muted">
+              Weather data provided by OpenWeatherMap API. 
+              <% if @from_cache %>
+                This result was served from our 30-minute cache for faster access.
+              <% else %>
+                This result was freshly fetched from the weather service.
+              <% end %>
+            </p>
+          </div>
+          <div class="col-md-6">
+            <h6>Cache Status</h6>
+            <p class="text-muted">
+              <% if @from_cache %>
+                <span class="badge bg-info">Cached</span>
+                Data retrieved from cache (expires in 30 minutes)
+              <% else %>
+                <span class="badge bg-success">Fresh</span>
+                Data freshly fetched from weather service
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

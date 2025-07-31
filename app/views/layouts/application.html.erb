@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weather App</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1>🌤️ Weather App</h1>
+        <p>Get current weather and forecasts for any address</p>
+      </header>
+
+      <main>
+        <%= yield %>
+      </main>
+
+      <footer>
+        <p>&copy; 2025 Weather App. Powered by OpenWeatherMap API.</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: weatherapp_development
+      MYSQL_USER: weatherapp
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+
+  web:
+    image: ruby:3.2.2
+    restart: always
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: mysql2://weatherapp:password@db:3306/weatherapp_development
+      TEST_DATABASE_URL: mysql2://weatherapp:password@db:3306/weatherapp_test
+      REDIS_URL: redis://redis:6379/0
+      RAILS_ENV: development
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: bash -c "apt-get update && apt-get install -y build-essential libpq-dev nodejs default-mysql-client && gem install bundler -v 2.4.22 && bundle install && rails db:create db:migrate && rails server -b 0.0.0.0"
+    stdin_open: true
+    tty: true
+
+volumes:
+  mysql_data:
+  redis_data: 
